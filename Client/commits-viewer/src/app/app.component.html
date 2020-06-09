@@ -1,0 +1,48 @@
+<mat-toolbar color="primary">Commits Viewer</mat-toolbar>
+<mat-card>
+  <form class="github-form">
+    <mat-form-field class="full-width">
+      <input type="text"
+             placeholder="Github User"
+             matInput
+             [formControl]="userControl"
+             [matAutocomplete]="autoUsers"
+             required minlength="4"
+             (keyup.enter)="searchUser()">
+      <mat-error>User must be at least 4 characters long.</mat-error>
+      <mat-icon matSuffix (click)="searchUser()">search</mat-icon>
+      <mat-autocomplete #autoUsers="matAutocomplete">
+        <mat-option *ngFor="let option of usersAutocomplete" [value]="option" (click)="userSelected(option)">
+          {{option}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+  <form class="github-form">
+    <mat-form-field class="full-width">
+      <input type="text"
+             placeholder="Github Repository"
+             matInput
+             [formControl]="repoControl"
+             [matAutocomplete]="autoRepos"
+             required minlength="4"
+             (keyup.enter)="searchRepo()">
+      <mat-error>Repository must be at least 4 characters long.</mat-error>
+      <mat-icon matSuffix (click)="searchRepo()">search</mat-icon>
+      <mat-autocomplete #autoRepos="matAutocomplete">
+        <mat-option *ngFor="let option of reposAutocomplete" [value]="option.name" (click)="repoSelected(option)">
+          {{option.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+  </form>
+  
+  <button mat-raised-button (click)="clear()">Clear</button>
+  <button mat-raised-button color="primary" (click)="getCommits()" [disabled]="userControl.errors || repoControl.errors">Get commits</button>
+</mat-card>
+<mat-card *ngFor="let commit of commits">
+  <mat-card-title>{{commit.sha}}</mat-card-title>
+  <mat-card-subtitle>Created: <span class="commit-info">{{commit.date | date: 'hh:mm dd/MM/yyyy'}}</span></mat-card-subtitle>
+  <mat-card-subtitle>Author: <span class="commit-info">{{commit.author}}</span></mat-card-subtitle>
+  <mat-card-content>{{commit.message}}</mat-card-content>
+</mat-card>
